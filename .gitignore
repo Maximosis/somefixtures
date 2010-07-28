@@ -1,0 +1,16 @@
+# Compiled Source #
+###################
+
+# Files #
+#########
+*.*~
+.#*
+#*#
+
+# OS generated files #
+######################
+.DS_Store?
+.DS_Store
+
+# Ignore content in #
+#####################
