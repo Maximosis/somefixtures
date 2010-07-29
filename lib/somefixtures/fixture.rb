@@ -31,10 +31,8 @@ module SomeFixtures
     def save fixtures
       name = @fixtures.keys
       fixtures.each do |f|
-
         File.new(@save_to + name.first + "." + @format, "w").puts f
         name.shift
-        
       end  
     end
     
