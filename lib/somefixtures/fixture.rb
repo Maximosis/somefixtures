@@ -11,7 +11,13 @@ module SomeFixtures
       @save_to  = fixture_info[:save_to]
       @fixtures = {}
     end
-
+    
+    def login auth
+      @login = auth[:login]
+      @token = auth[:token]
+      @authenticated = true
+    end
+    
     def add query, name
       @fixtures.each_key { |key| print name == key ? "You have added \"#{key}\" for a file name already. Each filename must be unique!\n" : nil }
       @fixtures[name] = @base_uri + query
@@ -24,8 +30,12 @@ module SomeFixtures
     private
     def get fixtures
       responses = []
-      @fixtures.each_value{ |key| responses << self.class.get(key) }
-      responses
+      if @authenticated
+        @fixtures.each_value{ |key| responses << self.class.get(key, :query => auth_params) }
+      else
+        @fixtures.each_value{ |key| responses << self.class.get(key) }
+      end
+        responses
     end
 
     def save fixtures
@@ -35,6 +45,10 @@ module SomeFixtures
         name.shift
       end  
     end
-    
+
+    def auth_params 
+      @login.nil? ? {} : { :login => @login, :token => @token }
+    end
+
   end
 end
