@@ -23,11 +23,10 @@ spec = Gem::Specification.new do |s|
     test/
     somefixtures.gemspec
   ]
-  s.add_development_dependency 'HTTParty'
   s.homepage = "http://github.com/jbw/somefixtures/"
   s.require_paths = %w[lib]
   s.rubyforge_project = 'somefixtures'
-  
+  s.add_dependency('httparty', '>= 0.6.1' ) 
 end
 
 Rake::GemPackageTask.new(spec) do |pkg| 
