@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'somefixtures'
-  s.version     = '0.0.1'
+  s.version     = '0.1.0'
   s.date        = '2010-07-30'
   s.description = "Testing fixture automator. Easies the pain of getting sample data for testing."
   s.summary     = s.description
@@ -20,9 +20,8 @@ Gem::Specification.new do |s|
     spec/
     somefixtures.gemspec
   ]
-  s.add_development_dependency 'HTTParty'
   s.homepage = "http://github.com/jbw/somefixtures/"
   s.require_paths = %w[lib]
   s.rubyforge_project = 'somefixtures'
-  
+  s.add_dependency('httparty', '>= 0.6.1')
 end

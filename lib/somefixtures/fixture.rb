@@ -15,26 +15,41 @@ module SomeFixtures
       @fixtures = {}
     end
     
-    def add query, name, authenticate = false
+    def add option, query, name, authenticate=false
       @fixtures.each_key { |key| print name == key ? "You have added \"#{key}\" for a file name already. Each filename must be unique!\n" : nil  }
-      @fixtures[name] = { :query => query, :authenticate => authenticate }
+      @fixtures[name] = { :option => option, :query => query, :authenticate => authenticate }
     end
+    
 
     def make_fixtures!
-      save (get @fixtures)
+      save (query)
     end
-
+    
+    def add_post(*args); add(:post, *args) end
+    def add_get(*args); add(:get, *args) end
+    
     private
-    def get fixtures
+    
+    def query
       responses = []
-
       @fixtures.each_key do |name|
-        responses << self.class.get( @base_uri + @fixtures[name][:query], :query => (authenticated? name) )
+        if @fixtures[name][:option] == :post
+          responses << (post name)
+        else
+          responses << (get name)
+        end
       end
-
       responses
     end
-
+    
+    def get name
+      self.class.get( @base_uri + @fixtures[name][:query], :query => (authenticated? name) )
+    end
+    
+    def post name
+      self.class.post( @base_uri + @fixtures[name][:query], :query => (authenticated? name) )
+    end
+    
     def authenticated? name
       @authenticate = @fixtures[name][:authenticate]; 
       auth_params
