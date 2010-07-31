@@ -1,9 +1,5 @@
-require 'HTTParty'
-
 module SomeFixtures
   class Fixture
-    include HTTParty
-    format @format
     
     def initialize fixture_info
       @format   = fixture_info[:format]
@@ -22,7 +18,7 @@ module SomeFixtures
     
 
     def make_fixtures!
-      save (query)
+      save query 
     end
     
     def add_post(*args); add(:post, *args) end
@@ -41,20 +37,40 @@ module SomeFixtures
       end
       responses
     end
-    
-    def get name
-      self.class.get( @base_uri + @fixtures[name][:query], :query => (authenticated? name) )
-    end
-    
-    def post name
-      self.class.post( @base_uri + @fixtures[name][:query], :query => (authenticated? name) )
-    end
-    
+     
     def authenticated? name
       @authenticate = @fixtures[name][:authenticate]; 
       auth_params
     end
 
+    def get name
+      Net::HTTP.start((split_uri @base_uri)[1]) do |http|     
+        req = Net::HTTP::Get.new((split_uri @base_uri)[2] + @fixtures[name][:query])
+        if @fixtures[name][:authenticate] == true
+          req.basic_auth (authenticated? name)[:login], (authenticated? name)[:token]
+        else
+          req.basic_auth @login, @token
+        end        
+        response = http.request(req)
+        response.body 
+      end
+    end
+    
+    def post name
+      Net::HTTP.start((split_uri @base_uri)[1]) do |http| 
+        req = Net::HTTP::Post.new((split_uri @base_uri)[2] + @fixtures[name][:query])
+        req.basic_auth @login, @token
+        response = http.request(req)
+        response.body
+      end
+    end
+    
+    def split_uri uri
+      if uri.match(/(http:\/\/)([a-zA-Z.]+)([a-zA-Z\d\/]+)/)
+        [$1, $2, $3]
+      end
+    end
+    
     def save fixtures
       name = @fixtures.keys
 
