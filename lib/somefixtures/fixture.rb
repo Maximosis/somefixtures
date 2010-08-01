@@ -1,3 +1,4 @@
+require 'net/http'
 module SomeFixtures
   class Fixture
     
