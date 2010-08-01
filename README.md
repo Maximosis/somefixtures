@@ -13,12 +13,20 @@ Install
 
 Usage
 -----
+
+Create a fixture object with the necessary details. The example given
+is from github, if you need to authenticate, supply your github username and
+password.  
+
 	foo = Fixture.new( 
                     :save_to => "/Users/jbw/Desktop/", 
                     :format  => "json"
                     :base_uri => "http://github.com/api/v2/json",
                     :login => "jbw", 
                     :token => "account_password" )
+
+You can supply the :get or :post option to add, otherwise use add\_get or
+add\_post. 
 
 	foo.add(:get, "/user/search/jbw", "search")
 	foo.add_get("/user/search/jbw", "search")
@@ -29,6 +37,9 @@ Usage
 
 	foo.add(:post, "/user/follow/jbw", "follow", true) 
 	foo.add_post("/user/follow/jbw", "follow", true)
+
+Once all the locations are added you can execute the following command to fetch
+the fixtures:
 
 	foo.make_fixtures!
 	
