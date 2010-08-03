@@ -31,9 +31,13 @@ module SomeFixtures
       responses = []
       @fixtures.each_key do |name|
         if @fixtures[name][:option] == :post
+          puts "---- Posting started"
           responses << (post name)
+          puts "++++ Posting done."
         else
+          puts "---- Getting started"
           responses << (get name)
+          puts "++++ Getting done."
         end
       end
       responses
@@ -58,12 +62,15 @@ module SomeFixtures
     end
     
     def post name
+      puts "\t-- Posting #{name} started"
       Net::HTTP.start((split_uri @base_uri)[1]) do |http| 
-        req = Net::HTTP::Post.new((split_uri @base_uri)[2] + @fixtures[name][:query])
+        req = Net::HTTP::Post.new((split_uri @base_uri)[2] + @fixtures[name][:query][:route])
+        req.body = @fixtures[name][:query][:values]
         req.basic_auth @login, @token
         response = http.request(req)
         response.body
       end
+      puts "\t++ Posting #{name} done."
     end
     
     def split_uri uri
@@ -74,11 +81,14 @@ module SomeFixtures
     
     def save fixtures
       name = @fixtures.keys
-
+      puts "---- Saving fixtures started"
       fixtures.each do |f|
+        puts "\t-- Saving #{name.first} starting..."
         File.new(@save_to + name.first + "." + @format, "w").puts f
         name.shift
-      end  
+        puts "\t++ Saving #{name.first} done."
+      end
+      puts '++++ Saving fixtures done'
     end
 
     def auth_params 
