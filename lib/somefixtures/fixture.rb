@@ -38,38 +38,28 @@ module SomeFixtures
       responses
     end
      
-    def authenticated? name
-      @authenticate = @fixtures[name][:authenticate]; 
-      auth_params
-    end
-
-    def get name
-      Net::HTTP.start((split_uri @base_uri)[1]) do |http|     
-        req = Net::HTTP::Get.new((split_uri @base_uri)[2] + @fixtures[name][:query])
-        if @fixtures[name][:authenticate] == true
-          req.basic_auth (authenticated? name)[:login], (authenticated? name)[:token]
-        else
-          req.basic_auth @login, @token
-        end        
-        response = http.request(req)
+    def get fixture
+      Net::HTTP.start(get_uri[:location]) do |http|     
+        request = Net::HTTP::Get.new(get_uri[:route] + @fixtures[fixture][:query][:route])
+        authenticate_if_values_given fixture, request
+        response = http.request(request)
         return response.body 
       end
     end
     
-    def post name
-      Net::HTTP.start((split_uri @base_uri)[1]) do |http| 
-        req = Net::HTTP::Post.new((split_uri @base_uri)[2] + @fixtures[name][:query][:route])
-        req.body = @fixtures[name][:query][:values]
-        req.basic_auth @login, @token
-        response = http.request(req)
-
+    def post fixture
+      Net::HTTP.start(get_uri[:location]) do |http| 
+        request = Net::HTTP::Post.new(get_uri[:route] + @fixtures[fixture][:query][:route])
+        request.body = @fixtures[fixture][:query][:values]
+        authenticate_if_values_given fixture, request
+        response = http.request(request)
         return response.body
       end
     end
     
-    def split_uri uri
-      if uri.match(/(http:\/\/)([a-zA-Z.]+)([a-zA-Z\d\/]+)/)
-        [$1, $2, $3]
+    def get_uri 
+      if @base_uri.match(/(http:\/\/)([a-zA-Z.]+)([a-zA-Z\d\/]+)/)
+        {:location => $2, :route => $3}
       end
     end
     
@@ -86,5 +76,15 @@ module SomeFixtures
       if @authenticate; (@login.nil? ? {} : { :login => @login, :token => @token }); end
     end
 
+    def authenticated? name
+      @authenticate = @fixtures[name][:authenticate];
+      auth_params
+    end
+
+    def authenticate_if_values_given fixture, request
+      if @fixtures[fixture][:authenticate] == true
+        request.basic_auth (authenticated? fixture)[:login], (authenticated? fixture)[:token]
+      end
+    end 
   end
 end
