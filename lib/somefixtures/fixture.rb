@@ -12,10 +12,11 @@ module SomeFixtures
       @fixtures = {}
     end
     
-    def add_post(*args); add_fixture(:post,  *args) end
-    def add_get(*args);  add_fixture(:get,   *args) end
+    def add_post(*args); add(:post,  *args) end
+    def add_get(*args);  add(:get,   *args) end
 
     def make_fixtures!
+      if @dups; puts @dups end
       save query_fixtures
     end
     
@@ -26,10 +27,22 @@ module SomeFixtures
       print "WARNING: You have added a file named: \"#{name}\" already. Each filename must be unique!\n" if value
       return value
     end
-    def add_fixture option, query, name, authenticate=false
-      return true if is_duplicate? name
-      @fixtures[name]  = { :option => option, :query => query, :authenticate => authenticate }
-    end   
+
+    def add_duplicate name, duplicate = { }
+      @dups = {}
+      @dups[name] = duplicate
+    end
+    def add_fixture name, fixture = { }
+      @fixtures[name] = fixture
+    end
+    def add option, query, name, authenticate=false
+      if is_duplicate? name
+        add_duplicate name, {:option => option, :query => query, :authenticate => authenticate  }
+        return true
+      else
+        add_fixture name, {:option => option, :query => query, :authenticate => authenticate }
+      end  
+    end
     def query_fixtures
       responses = []
       @fixtures.each_key do |fixture|
