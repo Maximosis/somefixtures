@@ -12,32 +12,30 @@ module SomeFixtures
       @fixtures = {}
     end
     
-    def add option, query, name, authenticate=false
-      @fixtures.each_key { |key| print name == key ? "You have added \"#{key}\" for a file name already. Each filename must be unique!\n" : nil  }
-      @fixtures[name] = { :option => option, :query => query, :authenticate => authenticate }
-    end
-    
+    def add_post(*args); add_fixture(:post,  *args) end
+    def add_get(*args);  add_fixture(:get,   *args) end
+
     def make_fixtures!
-      save query 
+      save query_fixtures
     end
-    
-    def add_post(*args); add(:post, *args) end
-    def add_get(*args); add(:get, *args) end
     
     private
-    
-    def query
+
+    def add_fixture option, query, name, authenticate=false
+      @fixtures.each_key { |key| print name == key ? "You have added \"#{key}\" for a file name already. Each filename must be unique!\n" : nil  }
+      @fixtures[name] = { :option => option, :query => query, :authenticate => authenticate }
+    end   
+    def query_fixtures
       responses = []
-      @fixtures.each_key do |name|
-        if @fixtures[name][:option] == :post
-          responses << (post name)
+      @fixtures.each_key do |fixture|
+        if @fixtures[fixture][:option] == :post
+          responses << ( post fixture )
         else
-          responses << (get name)
+          responses << ( get fixture )
         end
       end
       responses
     end
-     
     def get fixture
       Net::HTTP.start(get_uri[:location]) do |http|     
         request = Net::HTTP::Get.new(get_uri[:route] + @fixtures[fixture][:query][:route])
@@ -46,7 +44,6 @@ module SomeFixtures
         return response.body 
       end
     end
-    
     def post fixture
       Net::HTTP.start(get_uri[:location]) do |http| 
         request = Net::HTTP::Post.new(get_uri[:route] + @fixtures[fixture][:query][:route])
@@ -56,13 +53,11 @@ module SomeFixtures
         return response.body
       end
     end
-    
     def get_uri 
       if @base_uri.match(/(http:\/\/)([a-zA-Z.]+)([a-zA-Z\d\/]+)/)
         {:location => $2, :route => $3}
       end
     end
-    
     def save fixtures
       name = @fixtures.keys
       fixtures.each do |f|
@@ -71,16 +66,13 @@ module SomeFixtures
         return f.gsub("\"", "")
       end
     end
-
     def auth_params 
       if @authenticate; (@login.nil? ? {} : { :login => @login, :token => @token }); end
     end
-
     def authenticated? name
       @authenticate = @fixtures[name][:authenticate];
       auth_params
     end
-
     def authenticate_if_values_given fixture, request
       if @fixtures[fixture][:authenticate] == true
         request.basic_auth (authenticated? fixture)[:login], (authenticated? fixture)[:token]
