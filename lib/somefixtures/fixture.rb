@@ -20,10 +20,15 @@ module SomeFixtures
     end
     
     private
-
+    def is_duplicate? name
+      value = false
+      @fixtures.each_key{ |key| value = true if key == name }
+      print "WARNING: You have added a file named: \"#{name}\" already. Each filename must be unique!\n" if value
+      return value
+    end
     def add_fixture option, query, name, authenticate=false
-      @fixtures.each_key { |key| print name == key ? "You have added \"#{key}\" for a file name already. Each filename must be unique!\n" : nil  }
-      @fixtures[name] = { :option => option, :query => query, :authenticate => authenticate }
+      return true if is_duplicate? name
+      @fixtures[name]  = { :option => option, :query => query, :authenticate => authenticate }
     end   
     def query_fixtures
       responses = []
