@@ -14,19 +14,19 @@ module Helper
     File.read path
   end
 
-  def get_url url
-    url =~ /^http/ ? url : "http://jbw:pass@github.com/api/v2/json#{url}"
+  def get_url url, auth
+    auth == true ?  url =~ /^http/ ? url : "http://jbw:pass@github.com/api/v2/json#{url}" : url =~ /^http/ ? url : "http://github.com/api/v2/json#{url}"
   end
 
   def stub_get(*args);  stub_request(:get,  *args) end
   def stub_post(*args); stub_request(:post, *args) end  
 
-  def stub_request(option, url, filename, status = nil)
+  def stub_request(option, url, filename, status = nil, auth=false)
     options = { :body => "" }
     options.merge!( { :body => fixtures(filename) } ) if filename
     options.merge!( { :body => status.last } ) if status
     options.merge!( { :status => status } ) if status
-    FakeWeb.register_uri(option, get_url(url), options)
+    FakeWeb.register_uri(option, get_url(url, auth), options)
   end
   
   def self.valid
