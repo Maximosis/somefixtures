@@ -78,7 +78,7 @@ module SomeFixtures
       fixtures.each do |f|
         File.new(@save_to + name.first + "." + @format, "w").puts f
         name.shift
-        return f
+        return f.gsub("\"", "")
       end
     end
 
