@@ -1,6 +1,16 @@
 module SomeFixtures
+  include Helper
+
+  describe Fixture, " when adding a new fixture" do
+    before(:each){ @valid = Fixture.new(Helper.valid)}
+    context "when adding a fixture with the same name twice" do
+      it "should not allow you to create a file with the same name twice" do
+        @valid.add_get({ :route => "/user/show/joecolly"}, "show")
+        @valid.add_get({ :route => "/user/show/jbw"}, "show").should == true
+      end
+    end
+  end
   describe Fixture, " that does not require authentication " do
-    include Helper
     before(:each){ @valid = Fixture.new(Helper.valid)}
     context "when getting" do
       context "without paramaters" do
@@ -13,7 +23,6 @@ module SomeFixtures
     end
   end
   describe Fixture, " that requires authentication" do
-    include Helper
     before(:each){ @valid = Fixture.new(Helper.valid)}
     context "when getting" do
       context "without parameters" do
@@ -44,7 +53,6 @@ module SomeFixtures
           @valid.add_post({ :route => "/repos/show/jbw/emacs", :values => "values[description]=My Emacs configs"}, "repo_update_name", true)
           @valid.make_fixtures!["description:My Emacs configs"].should == "description:My Emacs configs"
         end
-        
         it "should return repo has_issues true" do
           stub_post("/repos/show/jbw/emacs", "repo_update.json", nil, true)
           @valid.add_post({ :route => "/repos/show/jbw/emacs", :values => "values[has_issues]=true"}, "repo_update_name", true)
