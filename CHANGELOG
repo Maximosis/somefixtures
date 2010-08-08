@@ -1,0 +1,7 @@
+0.2.0
+
+2010-08-DD  Jason Watson  <jbw@jbw.cc>
+
+    * Syntax changes for add and post methods
+    * Parameters can now be passed to the post method
+    * Basic auth is now used. 

@@ -1,4 +1,4 @@
-require '../lib/SomeFixtures'
+require SomeFixtures
 
 class T 
   include SomeFixtures
@@ -7,18 +7,14 @@ class T
                     :save_to => "/Users/jbw/Desktop/", 
                     :format  => "json",
                     :base_uri => "http://github.com/api/v2/json",
-                    :login => "jbw", 
-                    :token => "account_password" )
+                    :login => "username", 
+                    :token => "password" )
 
-  foo.add(:get, "/user/search/jbw", "search")
-  foo.add_get("/user/search/jbw", "search")
+  foo.add_get( { :route => "/user/show/jbw" }, "showw")
+
+  foo.add_post({ :route => "/user/follow/jbw" }, "follow", true)
   
-  foo.add_get("/user/show/jbw", "show_unauthenticated")
-  foo.add_get("/user/show", "show_authenticated", true)
-  foo.add_get("/user/show/jbw/followers", "followers")
-
-  foo.add(:post, "/user/follow/jbw", "follow", true) 
-  foo.add_post("/user/follow/jbw", "follow", true)
+  foo.add_post({ :route => "/repos/show/jbw/emacs", :values => "values[description]=My Emacs configs" },"repo_update_description", true )
 
   foo.make_fixtures!
   

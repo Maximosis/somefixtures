@@ -25,20 +25,16 @@ password.
                     :login => "jbw", 
                     :token => "account_password" )
 
-You can supply the :get or :post option to add, otherwise use add\_get or
-add\_post. 
+The following shows some examples of adding fixtures to a data structure. 
 
-	foo.add(:get, "/user/search/jbw", "search")
-	foo.add_get("/user/search/jbw", "search")
+    foo.add_get( { :route => "/user/show/jbw" }, "show")                                                                                                       
+                                                                                                                                                              
+    foo.add_post({ :route => "/user/follow/jbw" }, "follow", true)                                                                                              
+                                                                                                                                                              
+    foo.add_post({ :route => "/repos/show/jbw/emacs", :values => "values[description]=My Emacs configs" },"repo_update_description", true )                     
+                                                                                                                                                              
 
-	foo.add_get("/user/show/jbw", "show_unauthenticated")
-	foo.add_get("/user/show", "show_authenticated", true)
-	foo.add_get("/user/show/jbw/followers", "followers")
-
-	foo.add(:post, "/user/follow/jbw", "follow", true) 
-	foo.add_post("/user/follow/jbw", "follow", true)
-
-Once all the locations are added you can execute the following command to fetch
+Once all the routes are added you can execute the following command to fetch
 the fixtures:
 
 	foo.make_fixtures!
@@ -49,6 +45,5 @@ MIT
 
 TODO
 ----
-* Make more generic
 * Documentation
 
