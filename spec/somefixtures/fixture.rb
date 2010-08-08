@@ -2,17 +2,17 @@ module SomeFixtures
   include Helper
 
   describe Fixture  do
-    before(:each){ @valid = Fixture.new(Helper.valid)}
+    before(:each){ @valid =  Fixture.new(Helper.valid)}
     context "when adding a fixture with an existing name" do
       it "should not allow you to create a file with the same name twice" do
         @valid.add_get({ :route => "/user/show/joecolly"}, "show")
-        @valid.add_get({ :route => "/user/show/jbw"}, "show").should == true
+        @valid.add_get({ :route => "/user/show/jbw"},      "show").should == true
       end
     end
     context " checking files are written with data " do
       it "should have created the file" do
         @valid.add_get({ :route => "/user/show/jbw"}, "show")
-        path = File.join(@valid.save_to, @valid.fixtures.keys[0] + "." + @valid.format)                                                                       
+        path = File.join(@valid.save_to, @valid.fixtures.keys[0] + "." + @valid.format)                                     
         File.exist?(path).should == true
       end
       it "should have written something  to the file" do
@@ -24,7 +24,7 @@ module SomeFixtures
     end
   end
   describe Fixture, " that does not require authentication " do
-    before(:each){ @valid = Fixture.new(Helper.valid)}
+    before(:each){ @valid  =  Fixture.new(Helper.valid)}
     context "when creating a fixture" do
       it "should return the fixture information" do
         @valid.format.should   == "json"
