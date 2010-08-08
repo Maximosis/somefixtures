@@ -62,7 +62,7 @@ module SomeFixtures
     end
     def get_uri 
       if @base_uri.match(/(http:\/\/)([a-zA-Z.]+)([a-zA-Z\d\/]+)/)
-        {:location => $2, :route => $3}
+        { :location => $2, :route => $3 }
       end
     end
     def save fixtures
@@ -73,16 +73,9 @@ module SomeFixtures
         return f.gsub("\"", "")
       end
     end
-    def auth_params 
-      if @authenticate; (@login.nil? ? {} : { :login => @login, :token => @token }); end
-    end
-    def authenticated? name
-      @authenticate = @fixtures[name][:authenticate];
-      auth_params
-    end
     def authenticate_if_values_given fixture, request
       if @fixtures[fixture][:authenticate] == true
-        request.basic_auth (authenticated? fixture)[:login], (authenticated? fixture)[:token]
+        request.basic_auth @login, @token
       end
     end 
   end
