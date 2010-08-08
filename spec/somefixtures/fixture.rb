@@ -1,14 +1,25 @@
 module SomeFixtures
   include Helper
 
-  describe Fixture, " when adding a new fixture" do
   describe Fixture  do
     before(:each){ @valid = Fixture.new(Helper.valid)}
-    context "when adding a fixture with the same name twice" do
     context "when adding a fixture with an existing name" do
       it "should not allow you to create a file with the same name twice" do
         @valid.add_get({ :route => "/user/show/joecolly"}, "show")
         @valid.add_get({ :route => "/user/show/jbw"}, "show").should == true
+      end
+    end
+    context " checking files are written with data " do
+      it "should have created the file" do
+        @valid.add_get({ :route => "/user/show/jbw"}, "show")
+        path = File.join(@valid.save_to, @valid.fixtures.keys[0] + "." + @valid.format)                                                                       
+        File.exist?(path).should == true
+      end
+      it "should have written something  to the file" do
+        @valid.add_get("/user/show/jbw", "show")
+        path = File.join(@valid.save_to, @valid.fixtures.keys[0] + "." + @valid.format)
+        File.exist?(path).should == true
+        File.size?(path).should_not == nil
       end
     end
   end
@@ -49,7 +60,6 @@ module SomeFixtures
           stub_get("/user/show/jbw", "show_authenticated.json", nil, true)
           @valid.add_get({ :route => "/user/show/jbw"}, "show_authenticated", true)
           @valid.make_fixtures!["plan:{name:free"].should == "plan:{name:free"
-          
         end
       end
     end

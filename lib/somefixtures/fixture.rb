@@ -1,6 +1,7 @@
 require 'net/http'
 module SomeFixtures
   class Fixture
+
     attr_accessor :format, :base_uri, :save_to, :login, :token
     
     def initialize fixture_info
