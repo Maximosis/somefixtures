@@ -14,6 +14,13 @@ module SomeFixtures
   end
   describe Fixture, " that does not require authentication " do
     before(:each){ @valid = Fixture.new(Helper.valid)}
+    context "when creating a fixture" do
+      it "should return the fixture information" do
+        @valid.format.should   == "json"
+        @valid.base_uri.should == "http://github.com/api/v2/json"
+        @valid.save_to.should  == "/Users/jbw/Desktop/"
+      end
+    end      
     context "when getting" do
       context "without paramaters" do
         it "should return a users information" do
@@ -26,6 +33,16 @@ module SomeFixtures
   end
   describe Fixture, " that requires authentication" do
     before(:each){ @valid = Fixture.new(Helper.valid)}
+    context "when creating a fixture" do
+      it "should return the fixture information" do
+        @valid.format.should   == "json"
+        @valid.base_uri.should == "http://github.com/api/v2/json"
+        @valid.save_to.should  == "/Users/jbw/Desktop/"
+        
+        @valid.login == "jbw"
+        @valid.token == "pass"
+      end      
+    end
     context "when getting" do
       context "without parameters" do
         it "should return " do
