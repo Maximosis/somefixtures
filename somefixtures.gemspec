@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'somefixtures'
-  s.version     = '0.1.6'
-  s.date        = '2010-07-30'
+  s.version     = '0.2.0'
+  s.date        = '2010-08-08'
   s.description = "Testing fixture automator. Easies the pain of getting sample data for testing."
   s.summary     = s.description
   
