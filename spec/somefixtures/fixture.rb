@@ -2,8 +2,10 @@ module SomeFixtures
   include Helper
 
   describe Fixture, " when adding a new fixture" do
+  describe Fixture  do
     before(:each){ @valid = Fixture.new(Helper.valid)}
     context "when adding a fixture with the same name twice" do
+    context "when adding a fixture with an existing name" do
       it "should not allow you to create a file with the same name twice" do
         @valid.add_get({ :route => "/user/show/joecolly"}, "show")
         @valid.add_get({ :route => "/user/show/jbw"}, "show").should == true
