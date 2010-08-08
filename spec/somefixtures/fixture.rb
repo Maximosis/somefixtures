@@ -61,6 +61,15 @@ module SomeFixtures
           @valid.make_fixtures!['joecolly'].should == "joecolly"
         end
       end
+      context "with multiple parameters" do
+        it "should return all parameters" do
+          stub_post("repos/show/jbw/emacs", "repo_update_all.json", nil, true)
+          @valid.add_post( { :route => "repos/show/jbw/emacs", :values => "values[name]=Emacs, values[homepage]=http://emacs.jbw.cc"}, "repo_update_all", true)
+          @valid.make_fixtures!["name:Emacs"].should == "name:Emacs"
+          @valid.make_fixtures!["homepage:http://emacs.jbw.cc"].should == "homepage:http://emacs.jbw.cc"
+        end
+      end
+      
       context "with parameters" do
         it "should return repo name sucessfully" do
           stub_post("/repos/show/jbw/emacs", "repo_update.json", nil, true)
