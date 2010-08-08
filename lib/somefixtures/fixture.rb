@@ -2,7 +2,7 @@ require 'net/http'
 module SomeFixtures
   class Fixture
 
-    attr_accessor :format, :base_uri, :save_to, :login, :token
+    attr_accessor :format, :base_uri, :save_to, :login, :token, :fixtures
     
     def initialize fixture_info
       @format   = fixture_info[:format]
@@ -68,7 +68,7 @@ module SomeFixtures
     def save fixtures
       name = @fixtures.keys
       fixtures.each do |f|
-        File.new(@save_to + name.first + "." + @format, "w").puts f
+        File.new(File.join(@save_to, name.first + "." + @format), "w").puts f
         name.shift
         return f.gsub("\"", "")
       end
